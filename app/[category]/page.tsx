@@ -1,11 +1,11 @@
-import { prisma } from '../../lib/prisma'; // Certifique-se que tem o arquivo lib/prisma.ts (vamos criar abaixo se não tiver)
+import { prisma } from '../../lib/prisma';
 import Header from "../components/Header";
 import { ArrowLeft, PlayCircle, FileText } from "lucide-react";
 import Link from "next/link";
 
 export default async function CategoryPage({ params }: { params: { category: string } }) {
   
-  // Busca no banco apenas os artigos dessa categoria (ex: fiscal)
+  // Busca no banco apenas os artigos dessa categoria
   const articles = await prisma.article.findMany({
     where: {
       category: params.category 
@@ -60,10 +60,26 @@ export default async function CategoryPage({ params }: { params: { category: str
                   <div className="text-gray-600 mb-4 whitespace-pre-wrap text-sm line-clamp-3">
                     {art.content}
                   </div>
-                  {/* Botão fingindo abrir detalhes (pode implementar depois) */}
-                  <button className="text-blue-600 font-bold text-sm hover:underline">
-                    Ver tutorial completo
-                  </button>
+                  
+                  <div className="flex gap-4 mt-4">
+                    {/* Botão Detalhes (Estético) */}
+                    <button className="text-blue-600 font-bold text-sm hover:underline">
+                      Ver detalhes
+                    </button>
+
+                    {/* BOTÃO PDF (Só aparece se tiver link salvo no banco) */}
+                    {art.pdfUrl && (
+                      <a 
+                        href={art.pdfUrl} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-1 text-red-600 font-bold text-sm hover:underline border border-red-200 px-3 py-1 rounded hover:bg-red-50"
+                      >
+                        <FileText size={16} /> Baixar PDF
+                      </a>
+                    )}
+                  </div>
+
                 </div>
               </div>
             ))}

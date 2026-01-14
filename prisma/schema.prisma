@@ -13,5 +13,6 @@ model Article {
   category  String
   content   String
   videoId   String?
+  pdfUrl    String?  // <--- ADICIONE ESTA LINHA (O ? significa que é opcional)
   createdAt DateTime @default(now())
 }

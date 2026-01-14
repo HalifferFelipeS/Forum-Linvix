@@ -11,6 +11,7 @@ type Article = {
   category: string;
   content: string;
   videoId: string | null;
+  pdfUrl: string | null; // <--- NOVO
 };
 
 export default function AdminPanel({ articles }: { articles: Article[] }) {
@@ -109,6 +110,16 @@ export default function AdminPanel({ articles }: { articles: Article[] }) {
               <div>
                 <label className="text-xs font-bold text-gray-500 uppercase">Link Vídeo (Youtube)</label>
                 <input name="videoUrl" defaultValue={editingItem?.videoId ? `https://youtube.com/watch?v=${editingItem.videoId}` : ''} className="w-full border p-2 rounded bg-gray-50" />
+              </div>
+			  
+			  <div>
+                <label className="text-xs font-bold text-gray-500 uppercase">Link do PDF (Google Drive/Site)</label>
+                <input 
+                  name="pdfUrl" 
+                  defaultValue={editingItem?.pdfUrl || ''} 
+                  className="w-full border p-2 rounded bg-gray-50" 
+                  placeholder="https://..."
+                />
               </div>
 
               <div>
