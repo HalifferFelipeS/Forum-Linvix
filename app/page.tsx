@@ -1,3 +1,4 @@
+import Link from "next/link";
 import Header from "./components/Header";
 import { FileText, ShoppingCart, Users, BarChart3, Search, PlayCircle, HelpCircle } from "lucide-react";
 
