@@ -36,15 +36,17 @@ export default function Home() {
       {/* ÁREA DOS CARDS (Sobe um pouco para cima do azul) */}
       <main className="flex-1 container mx-auto px-4 -mt-10 pb-20">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          
           {categories.map((cat) => (
-            <div key={cat.name} className="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition cursor-pointer border-b-4 border-transparent hover:border-[#003366] group">
-              <div className={`mb-4 ${cat.color} bg-gray-50 w-16 h-16 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform`}>
-                {cat.icon}
+            // Adicionamos o Link aqui em volta
+            <Link key={cat.name} href={`/${cat.name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")}`}>
+              <div className="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition cursor-pointer border-b-4 border-transparent hover:border-[#003366] group h-full">
+                <div className={`mb-4 ${cat.color} bg-gray-50 w-16 h-16 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform`}>
+                  {cat.icon}
+                </div>
+                <h3 className="font-bold text-xl text-gray-800 mb-2">{cat.name}</h3>
+                <p className="text-gray-500 text-sm">{cat.desc}</p>
               </div>
-              <h3 className="font-bold text-xl text-gray-800 mb-2">{cat.name}</h3>
-              <p className="text-gray-500 text-sm">{cat.desc}</p>
-            </div>
+            </Link>
           ))}
 
         </div>
