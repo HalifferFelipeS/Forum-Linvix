@@ -4,14 +4,14 @@ import { useState } from 'react';
 import { createPost, updatePost, deletePost } from '../actions';
 import { Lock, Save, Trash2, Edit, Search, PlusCircle } from 'lucide-react';
 
-// Definindo o tipo do Artigo para o TypeScript não reclamar
+// Atualizamos o tipo para aceitar várias categorias (string[]) e o PDF
 type Article = {
   id: string;
   title: string;
-  category: string;
+  categories: string[]; // <--- AGORA É UMA LISTA
   content: string;
   videoId: string | null;
-  pdfUrl: string | null; // <--- NOVO
+  pdfUrl: string | null;
 };
 
 export default function AdminPanel({ articles }: { articles: Article[] }) {
@@ -20,7 +20,8 @@ export default function AdminPanel({ articles }: { articles: Article[] }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [editingItem, setEditingItem] = useState<Article | null>(null);
 
-  const MY_SECRET_PASS = "linvix2026"; 
+  // SUA NOVA SENHA AQUI
+  const MY_SECRET_PASS = "@Binho1379"; 
 
   // Filtrar tutoriais pela busca
   const filteredArticles = articles.filter(art => 
@@ -32,17 +33,16 @@ export default function AdminPanel({ articles }: { articles: Article[] }) {
     else alert("Senha incorreta!");
   };
 
-  // Prepara o formulário para edição
   const handleEdit = (article: Article) => {
     setEditingItem(article);
-    window.scrollTo({ top: 0, behavior: 'smooth' }); // Sobe a tela
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // Limpa o formulário para criar um novo
   const handleCancelEdit = () => {
     setEditingItem(null);
   };
 
+  // TELA DE LOGIN
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-100">
@@ -65,6 +65,7 @@ export default function AdminPanel({ articles }: { articles: Article[] }) {
     );
   }
 
+  // TELA DO ADMIN
   return (
     <div className="min-h-screen bg-gray-50 p-8">
       <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -77,18 +78,26 @@ export default function AdminPanel({ articles }: { articles: Article[] }) {
               {editingItem ? 'Editar Tutorial' : 'Novo Tutorial'}
             </h1>
 
-            <form action={async (formData) => {
+            {/* O "key" serve para resetar o formulário quando troca entre Novo e Editar */}
+            <form 
+              key={editingItem ? editingItem.id : 'new'}
+              action={async (formData) => {
+                // Validação simples para garantir que marcou categoria
+                if (!formData.getAll('categories').length) {
+                    alert("Selecione pelo menos uma categoria!");
+                    return;
+                }
+
                 if (editingItem) {
                     await updatePost(formData);
-                    setEditingItem(null); // Sai do modo edição
+                    setEditingItem(null); 
                 } else {
                     await createPost(formData);
-                    // Limpar campos manualmente ou usar ref (simplificado aqui pelo reload)
                 }
                 alert("Salvo com sucesso!");
             }} className="space-y-4">
               
-              {/* Campo ID Escondido (Só aparece na edição) */}
+              {/* ID Escondido (Só aparece na edição) */}
               {editingItem && <input type="hidden" name="id" value={editingItem.id} />}
 
               <div>
@@ -96,35 +105,39 @@ export default function AdminPanel({ articles }: { articles: Article[] }) {
                 <input name="title" defaultValue={editingItem?.title} required className="w-full border p-2 rounded bg-gray-50" />
               </div>
 
+              {/* SELEÇÃO DE CATEGORIAS (Múltiplas) */}
               <div>
-                <label className="text-xs font-bold text-gray-500 uppercase">Categoria</label>
-                <select name="category" defaultValue={editingItem?.category} className="w-full border p-2 rounded bg-gray-50">
-                  <option value="fiscal">Fiscal</option>
-                  <option value="compras">Compras</option>
-                  <option value="cadastro">Cadastro</option>
-                  <option value="relatorios">Relatórios</option>
-                  <option value="duvidas">Dúvidas Gerais</option>
-                </select>
+                <label className="text-xs font-bold text-gray-500 uppercase mb-2 block">Categorias (Marque as opções)</label>
+                <div className="grid grid-cols-2 gap-2 bg-gray-50 p-3 rounded border h-32 overflow-y-auto">
+                  {['fiscal', 'compras', 'cadastro', 'relatorios', 'duvidas', 'video-aulas'].map((cat) => (
+                    <label key={cat} className="flex items-center gap-2 cursor-pointer hover:bg-gray-100 p-1 rounded">
+                      <input 
+                        type="checkbox" 
+                        name="categories" 
+                        value={cat}
+                        // Verifica se a categoria já estava marcada na edição
+                        defaultChecked={editingItem?.categories.includes(cat)}
+                        className="w-4 h-4 text-blue-600 rounded"
+                      />
+                      <span className="capitalize text-sm">{cat}</span>
+                    </label>
+                  ))}
+                </div>
               </div>
 
               <div>
                 <label className="text-xs font-bold text-gray-500 uppercase">Link Vídeo (Youtube)</label>
-                <input name="videoUrl" defaultValue={editingItem?.videoId ? `https://youtube.com/watch?v=${editingItem.videoId}` : ''} className="w-full border p-2 rounded bg-gray-50" />
+                <input name="videoUrl" defaultValue={editingItem?.videoId ? `https://youtube.com/watch?v=${editingItem.videoId}` : ''} className="w-full border p-2 rounded bg-gray-50" placeholder="https://..." />
               </div>
-			  
-			  <div>
-                <label className="text-xs font-bold text-gray-500 uppercase">Link do PDF (Google Drive/Site)</label>
-                <input 
-                  name="pdfUrl" 
-                  defaultValue={editingItem?.pdfUrl || ''} 
-                  className="w-full border p-2 rounded bg-gray-50" 
-                  placeholder="https://..."
-                />
+
+              <div>
+                <label className="text-xs font-bold text-gray-500 uppercase">Link PDF (Opcional)</label>
+                <input name="pdfUrl" defaultValue={editingItem?.pdfUrl || ''} className="w-full border p-2 rounded bg-gray-50" placeholder="https://..." />
               </div>
 
               <div>
                 <label className="text-xs font-bold text-gray-500 uppercase">Conteúdo</label>
-                <textarea name="content" defaultValue={editingItem?.content} required className="w-full border p-2 rounded bg-gray-50 h-32" />
+                <textarea name="content" defaultValue={editingItem?.content} required className="w-full border p-2 rounded bg-gray-50 h-32" placeholder="Digite a explicação..." />
               </div>
 
               <div className="flex gap-2">
@@ -165,7 +178,14 @@ export default function AdminPanel({ articles }: { articles: Article[] }) {
                 <div key={art.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-blue-50 transition">
                   <div>
                     <strong className="text-gray-800 block">{art.title}</strong>
-                    <span className="text-xs text-gray-500 uppercase bg-gray-200 px-2 py-1 rounded">{art.category}</span>
+                    <div className="flex gap-1 mt-1">
+                        {/* Exibe as categorias como etiquetas pequenas */}
+                        {art.categories.map(cat => (
+                            <span key={cat} className="text-[10px] bg-gray-200 text-gray-600 px-2 py-0.5 rounded uppercase font-bold">
+                                {cat}
+                            </span>
+                        ))}
+                    </div>
                   </div>
                   
                   <div className="flex gap-2">

@@ -10,9 +10,9 @@ datasource db {
 model Article {
   id        String   @id @default(cuid())
   title     String
-  category  String
+  categories String[]
   content   String
   videoId   String?
-  pdfUrl    String?  // <--- ADICIONE ESTA LINHA (O ? significa que é opcional)
+  pdfUrl    String?
   createdAt DateTime @default(now())
 }

@@ -8,10 +8,11 @@ const prisma = new PrismaClient();
 // CRIAR
 export async function createPost(formData: FormData) {
   const title = formData.get('title') as string;
-  const category = formData.get('category') as string;
+  // Pega todas as categorias marcadas
+  const categories = formData.getAll('categories') as string[]; 
   const content = formData.get('content') as string;
   const videoUrl = formData.get('videoUrl') as string;
-  const pdfUrl = formData.get('pdfUrl') as string; // <--- NOVO
+  const pdfUrl = formData.get('pdfUrl') as string;
 
   let videoId = videoUrl;
   if (videoUrl && videoUrl.includes('v=')) {
@@ -21,7 +22,7 @@ export async function createPost(formData: FormData) {
   }
 
   await prisma.article.create({
-    data: { title, category, content, videoId, pdfUrl },
+    data: { title, categories, content, videoId, pdfUrl },
   });
 
   revalidatePath('/admin');
@@ -32,10 +33,10 @@ export async function createPost(formData: FormData) {
 export async function updatePost(formData: FormData) {
   const id = formData.get('id') as string;
   const title = formData.get('title') as string;
-  const category = formData.get('category') as string;
+  const categories = formData.getAll('categories') as string[]; // <--- MUDOU
   const content = formData.get('content') as string;
   const videoUrl = formData.get('videoUrl') as string;
-  const pdfUrl = formData.get('pdfUrl') as string; // <--- NOVO
+  const pdfUrl = formData.get('pdfUrl') as string;
 
   let videoId = videoUrl;
   if (videoUrl && videoUrl.includes('v=')) {
@@ -46,7 +47,7 @@ export async function updatePost(formData: FormData) {
 
   await prisma.article.update({
     where: { id },
-    data: { title, category, content, videoId, pdfUrl },
+    data: { title, categories, content, videoId, pdfUrl },
   });
 
   revalidatePath('/admin');

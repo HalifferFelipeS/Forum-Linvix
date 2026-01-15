@@ -8,11 +8,11 @@ export default async function CategoryPage({ params }: { params: { category: str
   // Busca no banco apenas os artigos dessa categoria
   const articles = await prisma.article.findMany({
     where: {
-      category: params.category 
+      categories: {
+        has: params.category // "has" significa: a lista TEM essa categoria
+      }
     },
-    orderBy: {
-      createdAt: 'desc'
-    }
+    orderBy: { createdAt: 'desc' }
   });
 
   // Formata o título (ex: de 'fiscal' para 'Fiscal')
@@ -23,9 +23,9 @@ export default async function CategoryPage({ params }: { params: { category: str
       <Header />
       
       <main className="container mx-auto px-4 py-8 max-w-5xl">
-        <Link href="/" className="flex items-center text-blue-600 mb-6 hover:underline font-bold w-fit">
-          <ArrowLeft className="mr-2" size={20} /> Voltar
-        </Link>
+        <Link href={`/tutorial/${art.id}`} className="text-blue-600 font-bold text-sm hover:underline">
+   Ver detalhes
+</Link>
 
         <h1 className="text-3xl font-bold text-[#003366] mb-8 border-b pb-4">
           Tutoriais de {title}
