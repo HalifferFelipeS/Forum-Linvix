@@ -57,6 +57,11 @@ export default function AdminPanel({ articles }: { articles: Article[] }) {
             placeholder="Senha..." 
             className="w-full border p-3 rounded mb-4"
             onChange={(e) => setPassword(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                handleLogin();
+              }
+            }}
           />
           <button onClick={handleLogin} className="w-full bg-[#003366] text-white p-3 rounded font-bold hover:bg-blue-800">
             Entrar
