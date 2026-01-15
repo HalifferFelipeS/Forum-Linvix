@@ -35,10 +35,8 @@ export default function Header() {
 
           <nav className="hidden md:flex gap-8 text-sm font-medium">
             <Link href="/" className="hover:text-blue-200 transition">INÍCIO</Link>
-            <Link href="#" className="hover:text-blue-200 transition">TUTORIAIS</Link>
           </nav>
           
-          {/* REMOVI O BOTÃO ÁREA DO CLIENTE AQUI */}
         </div>
 
         {/* Barra de Busca e Título */}
