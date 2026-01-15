@@ -23,9 +23,10 @@ export default function AdminPanel({ articles }: { articles: Article[] }) {
   // SUA NOVA SENHA AQUI
   const MY_SECRET_PASS = "@Binho1379"; 
 
-  // Filtrar tutoriais pela busca
+// Filtrar tutoriais por Título OU Conteúdo
   const filteredArticles = articles.filter(art => 
-    art.title.toLowerCase().includes(searchTerm.toLowerCase())
+    art.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
+    art.content.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const handleLogin = () => {
