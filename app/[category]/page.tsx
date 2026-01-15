@@ -5,14 +5,16 @@ import Link from "next/link";
 
 export default async function CategoryPage({ params }: { params: { category: string } }) {
   
-  // Busca no banco apenas os artigos dessa categoria
+  // Busca no banco os artigos que TEM a categoria na lista
   const articles = await prisma.article.findMany({
     where: {
       categories: {
-        has: params.category // "has" significa: a lista TEM essa categoria
+        has: params.category 
       }
     },
-    orderBy: { createdAt: 'desc' }
+    orderBy: {
+      createdAt: 'desc'
+    }
   });
 
   // Formata o título (ex: de 'fiscal' para 'Fiscal')
@@ -23,9 +25,9 @@ export default async function CategoryPage({ params }: { params: { category: str
       <Header />
       
       <main className="container mx-auto px-4 py-8 max-w-5xl">
-        <Link href={`/tutorial/${art.id}`} className="text-blue-600 font-bold text-sm hover:underline">
-   Ver detalhes
-</Link>
+        <Link href="/" className="flex items-center text-blue-600 mb-6 hover:underline font-bold w-fit">
+          <ArrowLeft className="mr-2" size={20} /> Voltar
+        </Link>
 
         <h1 className="text-3xl font-bold text-[#003366] mb-8 border-b pb-4">
           Tutoriais de {title}
@@ -38,6 +40,7 @@ export default async function CategoryPage({ params }: { params: { category: str
           </div>
         ) : (
           <div className="grid gap-6">
+            {/* O ERRO ESTAVA AQUI: O Link precisa estar dentro deste map */}
             {articles.map((art) => (
               <div key={art.id} className="bg-white p-6 rounded-xl shadow-md border border-gray-100 flex flex-col md:flex-row gap-6">
                 
@@ -62,12 +65,12 @@ export default async function CategoryPage({ params }: { params: { category: str
                   </div>
                   
                   <div className="flex gap-4 mt-4">
-                    {/* Botão Detalhes (Estético) */}
-                    <button className="text-blue-600 font-bold text-sm hover:underline">
+                    {/* Botão Detalhes CORRIGIDO */}
+                    <Link href={`/tutorial/${art.id}`} className="text-blue-600 font-bold text-sm hover:underline flex items-center">
                       Ver detalhes
-                    </button>
+                    </Link>
 
-                    {/* BOTÃO PDF (Só aparece se tiver link salvo no banco) */}
+                    {/* Botão PDF */}
                     {art.pdfUrl && (
                       <a 
                         href={art.pdfUrl} 
