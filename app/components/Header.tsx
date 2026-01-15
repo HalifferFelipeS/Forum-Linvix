@@ -25,7 +25,7 @@ export default function Header() {
         <div className="flex items-center justify-between mb-8">
           <Link href="/">
              <Image 
-               src="/logo.svg" // ou linvix-dark.png
+               src="/linvix-dark.svg" 
                alt="Linvix Logo" 
                width={150} 
                height={40} 
